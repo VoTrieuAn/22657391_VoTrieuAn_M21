@@ -1,17 +1,23 @@
 import { useEffect, useRef, useState } from 'react'
 
 const StudentList = () => {
- // Sample student data
- const [students, setStudents] = useState([
+  // Sample student data
+  const [students, setStudents] = useState([
     { id: 1, name: "Nguyễn Văn A", class: "10A1", age: 16 },
     { id: 2, name: "Trần Thị B", class: "11A2", age: 17 },
     { id: 3, name: "Lê Văn C", class: "12A3", age: 18 },
     { id: 4, name: "Phạm Thị D", class: "10A1", age: 16 },
     { id: 5, name: "Hoàng Văn E", class: "11A2", age: 17 },
+    { id: 6, name: "Vũ Thị F", class: "12A3", age: 18 },
+    { id: 7, name: "Đặng Văn G", class: "10A1", age: 16 },
+    { id: 8, name: "Bùi Thị H", class: "11A2", age: 17 },
   ])
 
   // Search state
   const [searchQuery, setSearchQuery] = useState("")
+
+  // Class filter state
+  const [classFilter, setClassFilter] = useState("")
 
   // Form state
   const [formData, setFormData] = useState({
@@ -32,17 +38,30 @@ const StudentList = () => {
   const [editingStudent, setEditingStudent] = useState(null)
   const modalRef = useRef(null)
 
-  // Filter students based on search query
-  const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  // Get unique classes for the dropdown
+  const uniqueClasses = Array.from(new Set(students.map((student) => student.class))).sort()
+
+  // Filter students based on search query and class filter
+  const filteredStudents = students.filter((student) => {
+    const matchesName = student.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesClass = classFilter === "" || student.class === classFilter
+    return matchesName && matchesClass
+  })
 
   // Handle search input change
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value)
   }
 
-  // Clear search
-  const clearSearch = () => {
+  // Handle class filter change
+  const handleClassFilterChange = (e) => {
+    setClassFilter(e.target.value)
+  }
+
+  // Clear filters
+  const clearFilters = () => {
     setSearchQuery("")
+    setClassFilter("")
   }
 
   // Handle input changes
@@ -202,6 +221,9 @@ const StudentList = () => {
     }
   }, [isEditModalOpen])
 
+  // Determine if any filters are active
+  const isFiltering = searchQuery !== "" || classFilter !== ""
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Danh sách sinh viên</h1>
@@ -270,53 +292,97 @@ const StudentList = () => {
         </form>
       </div>
 
-      {/* Search Bar */}
-      <div className="bg-white p-4 rounded-lg shadow mb-6">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg
-              className="h-5 w-5 text-gray-400"
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                fillRule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </div>
-          <input
-            type="text"
-            className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            placeholder="Tìm kiếm sinh viên theo tên..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-          {searchQuery && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-              <button onClick={clearSearch} className="text-gray-400 hover:text-gray-600" aria-label="Xóa tìm kiếm">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+      {/* Filters Section */}
+      <div className="bg-white p-6 rounded-lg shadow mb-6">
+        <h2 className="text-lg font-semibold mb-4">Tìm kiếm và lọc</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Search Bar */}
+          <div>
+            <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">
+              Tìm kiếm theo tên
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
                   <path
                     fillRule="evenodd"
-                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
                     clipRule="evenodd"
                   />
                 </svg>
-              </button>
+              </div>
+              <input
+                type="text"
+                id="search"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                placeholder="Nhập tên sinh viên..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
             </div>
-          )}
+          </div>
+
+          {/* Class Filter */}
+          <div>
+            <label htmlFor="class-filter" className="block text-sm font-medium text-gray-700 mb-1">
+              Lọc theo lớp
+            </label>
+            <select
+              id="class-filter"
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+              value={classFilter}
+              onChange={handleClassFilterChange}
+            >
+              <option value="">Tất cả các lớp</option>
+              {uniqueClasses.map((className) => (
+                <option key={className} value={className}>
+                  {className}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
+
+        {/* Clear Filters Button */}
+        {isFiltering && (
+          <div className="mt-4 flex justify-end">
+            <button
+              onClick={clearFilters}
+              className="inline-flex items-center px-3 py-1.5 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+              Xóa bộ lọc
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Search Results Info */}
-      {searchQuery && (
+      {/* Filter Results Info */}
+      {isFiltering && (
         <div className="mb-4 text-sm text-gray-600">
-          {filteredStudents.length === 0
-            ? "Không tìm thấy sinh viên nào phù hợp."
-            : `Tìm thấy ${filteredStudents.length} sinh viên phù hợp với "${searchQuery}".`}
+          {filteredStudents.length === 0 ? (
+            "Không tìm thấy sinh viên nào phù hợp với bộ lọc."
+          ) : (
+            <div>
+              Tìm thấy {filteredStudents.length} sinh viên
+              {searchQuery && <span> có tên chứa "{searchQuery}"</span>}
+              {classFilter && <span> thuộc lớp {classFilter}</span>}.
+            </div>
+          )}
         </div>
       )}
 
@@ -385,7 +451,9 @@ const StudentList = () => {
             ) : (
               <tr>
                 <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
-                  {searchQuery ? "Không tìm thấy sinh viên nào phù hợp." : "Không có sinh viên nào trong danh sách."}
+                  {isFiltering
+                    ? "Không tìm thấy sinh viên nào phù hợp với bộ lọc."
+                    : "Không có sinh viên nào trong danh sách."}
                 </td>
               </tr>
             )}
@@ -427,7 +495,9 @@ const StudentList = () => {
           ))
         ) : (
           <div className="bg-white p-4 rounded-lg shadow text-center text-gray-500">
-            {searchQuery ? "Không tìm thấy sinh viên nào phù hợp." : "Không có sinh viên nào trong danh sách."}
+            {isFiltering
+              ? "Không tìm thấy sinh viên nào phù hợp với bộ lọc."
+              : "Không có sinh viên nào trong danh sách."}
           </div>
         )}
       </div>
