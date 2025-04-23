@@ -10,14 +10,155 @@ const StudentList = () => {
     { id: 5, name: "Hoàng Văn E", class: "11A2", age: 17 },
   ])
 
-  // Function to handle student deletion
-  const handleDelete = (id) => {
-    setStudents(students.filter((student) => student.id !== id))
-  }
+    // Form state
+    const [formData, setFormData] = useState({
+        name: "",
+        class: "",
+        age: "",
+      })
+    
+      // Form validation state
+      const [errors, setErrors] = useState({
+        name: "",
+        class: "",
+        age: "",
+      })
+    
+      // Handle input changes
+      const handleChange = (e) => {
+        const { name, value } = e.target
+        setFormData({
+          ...formData,
+          [name]: value,
+        })
+    
+        // Clear error when user types
+        if (errors[name]) {
+          setErrors({
+            ...errors,
+            [name]: "",
+          })
+        }
+      }
+    
+      // Validate form
+      const validateForm = () => {
+        let valid = true
+        const newErrors = { ...errors }
+    
+        if (!formData.name.trim()) {
+          newErrors.name = "Vui lòng nhập họ tên"
+          valid = false
+        }
+    
+        if (!formData.class.trim()) {
+          newErrors.class = "Vui lòng nhập lớp"
+          valid = false
+        }
+    
+        if (!formData.age.trim()) {
+          newErrors.age = "Vui lòng nhập tuổi"
+          valid = false
+        } else if (isNaN(Number(formData.age)) || Number(formData.age) <= 0) {
+          newErrors.age = "Tuổi phải là số dương"
+          valid = false
+        }
+    
+        setErrors(newErrors)
+        return valid
+      }
+    
+      // Handle form submission
+      const handleSubmit = (e) => {
+        e.preventDefault()
+    
+        if (validateForm()) {
+          // Add new student
+          const newStudent = {
+            id: Math.max(0, ...students.map((s) => s.id)) + 1,
+            name: formData.name,
+            class: formData.class,
+            age: Number(formData.age),
+          }
+    
+          setStudents([...students, newStudent])
+    
+          // Reset form
+          setFormData({
+            name: "",
+            class: "",
+            age: "",
+          })
+        }
+      }
 
-  return (
+  return  (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Danh sách sinh viên</h1>
+
+      {/* Add Student Form */}
+      <div className="bg-white p-6 rounded-lg shadow mb-8">
+        <h2 className="text-xl font-semibold mb-4">Thêm sinh viên mới</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Họ tên
+            </label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md ${errors.name ? "border-red-500" : "border-gray-300"}`}
+              placeholder="Nhập họ tên"
+            />
+            {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="class" className="block text-sm font-medium text-gray-700 mb-1">
+              Lớp
+            </label>
+            <input
+              type="text"
+              id="class"
+              name="class"
+              value={formData.class}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md ${errors.class ? "border-red-500" : "border-gray-300"}`}
+              placeholder="Nhập lớp"
+            />
+            {errors.class && <p className="mt-1 text-sm text-red-600">{errors.class}</p>}
+          </div>
+
+          <div>
+            <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">
+              Tuổi
+            </label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              value={formData.age}
+              onChange={handleChange}
+              className={`w-full px-3 py-2 border rounded-md ${errors.age ? "border-red-500" : "border-gray-300"}`}
+              placeholder="Nhập tuổi"
+              min="1"
+            />
+            {errors.age && <p className="mt-1 text-sm text-red-600">{errors.age}</p>}
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+            >
+              Thêm sinh viên
+            </button>
+          </div>
+        </form>
+      </div>
 
       {/* Desktop view */}
       <div className="hidden md:block overflow-hidden rounded-lg shadow">
@@ -64,7 +205,6 @@ const StudentList = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
-                    onClick={() => handleDelete(student.id)}
                     className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition-colors"
                   >
                     Xoá
@@ -83,7 +223,6 @@ const StudentList = () => {
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-medium">{student.name}</h3>
               <button
-                onClick={() => handleDelete(student.id)}
                 className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md text-sm transition-colors"
               >
                 Xoá
