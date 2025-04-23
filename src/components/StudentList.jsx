@@ -285,7 +285,7 @@ const StudentList = () => {
          <h1 className="text-2xl font-bold">Danh sách sinh viên</h1>
          <button
            onClick={handleClearAllData}
-           className="px-4 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors text-sm"
+           className="font-bold cursor-pointer px-4 py-2 bg-red-100 text-red-600 rounded-md hover:bg-red-200 transition-colors text-sm"
          >
            Xóa tất cả dữ liệu
          </button>
@@ -293,7 +293,7 @@ const StudentList = () => {
  
        {/* Add Student Form */}
        <div className="bg-white p-6 rounded-lg shadow mb-8">
-         <h2 className="text-xl font-semibold mb-4">Thêm sinh viên mới</h2>
+         <h2 className="text-2xl text-blue-500 font-semibold mb-4">Thêm sinh viên mới</h2>
          <form onSubmit={handleSubmit} className="space-y-4">
            <div>
              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -347,7 +347,7 @@ const StudentList = () => {
            <div>
              <button
                type="submit"
-               className="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
+               className="cursor-pointer bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
              >
                Thêm sinh viên
              </button>
@@ -357,7 +357,7 @@ const StudentList = () => {
  
        {/* Filters Section */}
        <div className="bg-white p-6 rounded-lg shadow mb-6">
-         <h2 className="text-lg font-semibold mb-4">Tìm kiếm và lọc</h2>
+         <h2 className="text-2xl text-blue-500 font-semibold mb-4">Tìm kiếm và lọc</h2>
          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
            {/* Search Bar */}
            <div>

@@ -10,13 +10,13 @@ const StudentItem =  ({ student, onEdit, onDelete, isMobile }) => {
             <div className="flex space-x-2">
               <button
                 onClick={() => onEdit(student)}
-                className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md text-sm transition-colors"
+                className="cursor-pointer text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md text-sm transition-colors"
               >
                 Sửa
               </button>
               <button
                 onClick={() => onDelete(student.id)}
-                className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md text-sm transition-colors"
+                className="cursor-pointer text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md text-sm transition-colors"
               >
                 Xoá
               </button>
@@ -50,13 +50,13 @@ const StudentItem =  ({ student, onEdit, onDelete, isMobile }) => {
           <div className="flex justify-end space-x-2">
             <button
               onClick={() => onEdit(student)}
-              className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md transition-colors"
+              className="cursor-pointer text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md transition-colors"
             >
               Sửa
             </button>
             <button
               onClick={() => onDelete(student.id)}
-              className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition-colors"
+              className="cursor-pointer text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition-colors"
             >
               Xoá
             </button>
