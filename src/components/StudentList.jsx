@@ -1,14 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 
 const StudentList = () => {
-   // Sample student data
-   const [students, setStudents] = useState([
+ // Sample student data
+ const [students, setStudents] = useState([
     { id: 1, name: "Nguyễn Văn A", class: "10A1", age: 16 },
     { id: 2, name: "Trần Thị B", class: "11A2", age: 17 },
     { id: 3, name: "Lê Văn C", class: "12A3", age: 18 },
     { id: 4, name: "Phạm Thị D", class: "10A1", age: 16 },
     { id: 5, name: "Hoàng Văn E", class: "11A2", age: 17 },
   ])
+
+  // Search state
+  const [searchQuery, setSearchQuery] = useState("")
 
   // Form state
   const [formData, setFormData] = useState({
@@ -28,6 +31,19 @@ const StudentList = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [editingStudent, setEditingStudent] = useState(null)
   const modalRef = useRef(null)
+
+  // Filter students based on search query
+  const filteredStudents = students.filter((student) => student.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value)
+  }
+
+  // Clear search
+  const clearSearch = () => {
+    setSearchQuery("")
+  }
 
   // Handle input changes
   const handleChange = (e) => {
@@ -254,6 +270,56 @@ const StudentList = () => {
         </form>
       </div>
 
+      {/* Search Bar */}
+      <div className="bg-white p-4 rounded-lg shadow mb-6">
+        <div className="relative">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg
+              className="h-5 w-5 text-gray-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </div>
+          <input
+            type="text"
+            className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            placeholder="Tìm kiếm sinh viên theo tên..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          {searchQuery && (
+            <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
+              <button onClick={clearSearch} className="text-gray-400 hover:text-gray-600" aria-label="Xóa tìm kiếm">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Search Results Info */}
+      {searchQuery && (
+        <div className="mb-4 text-sm text-gray-600">
+          {filteredStudents.length === 0
+            ? "Không tìm thấy sinh viên nào phù hợp."
+            : `Tìm thấy ${filteredStudents.length} sinh viên phù hợp với "${searchQuery}".`}
+        </div>
+      )}
+
       {/* Desktop view */}
       <div className="hidden md:block overflow-hidden rounded-lg shadow">
         <table className="min-w-full divide-y divide-gray-200">
@@ -286,82 +352,89 @@ const StudentList = () => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {students.map((student) => (
-              <tr key={student.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">{student.class}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-500">{student.age}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={() => handleEdit(student)}
-                      className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md transition-colors"
-                    >
-                      Sửa
-                    </button>
-                    <button
-                      onClick={() => handleDelete(student.id)}
-                      className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition-colors"
-                    >
-                      Xoá
-                    </button>
-                  </div>
+            {filteredStudents.length > 0 ? (
+              filteredStudents.map((student) => (
+                <tr key={student.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{student.name}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{student.class}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-500">{student.age}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex justify-end space-x-2">
+                      <button
+                        onClick={() => handleEdit(student)}
+                        className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md transition-colors"
+                      >
+                        Sửa
+                      </button>
+                      <button
+                        onClick={() => handleDelete(student.id)}
+                        className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition-colors"
+                      >
+                        Xoá
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="px-6 py-4 text-center text-sm text-gray-500">
+                  {searchQuery ? "Không tìm thấy sinh viên nào phù hợp." : "Không có sinh viên nào trong danh sách."}
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
 
       {/* Mobile view */}
       <div className="md:hidden space-y-4">
-        {students.map((student) => (
-          <div key={student.id} className="bg-white p-4 rounded-lg shadow">
-            <div className="flex justify-between items-center mb-2">
-              <h3 className="text-lg font-medium">{student.name}</h3>
-              <div className="flex space-x-2">
-                <button
-                  onClick={() => handleEdit(student)}
-                  className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md text-sm transition-colors"
-                >
-                  Sửa
-                </button>
-                <button
-                  onClick={() => handleDelete(student.id)}
-                  className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md text-sm transition-colors"
-                >
-                  Xoá
-                </button>
+        {filteredStudents.length > 0 ? (
+          filteredStudents.map((student) => (
+            <div key={student.id} className="bg-white p-4 rounded-lg shadow">
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-lg font-medium">{student.name}</h3>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleEdit(student)}
+                    className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md text-sm transition-colors"
+                  >
+                    Sửa
+                  </button>
+                  <button
+                    onClick={() => handleDelete(student.id)}
+                    className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md text-sm transition-colors"
+                  >
+                    Xoá
+                  </button>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-sm text-gray-500">
+                <div>
+                  <span className="font-medium">Lớp:</span> {student.class}
+                </div>
+                <div>
+                  <span className="font-medium">Tuổi:</span> {student.age}
+                </div>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-2 text-sm text-gray-500">
-              <div>
-                <span className="font-medium">Lớp:</span> {student.class}
-              </div>
-              <div>
-                <span className="font-medium">Tuổi:</span> {student.age}
-              </div>
-            </div>
+          ))
+        ) : (
+          <div className="bg-white p-4 rounded-lg shadow text-center text-gray-500">
+            {searchQuery ? "Không tìm thấy sinh viên nào phù hợp." : "Không có sinh viên nào trong danh sách."}
           </div>
-        ))}
+        )}
       </div>
-
-      {/* Empty state */}
-      {students.length === 0 && (
-        <div className="text-center py-8 bg-white rounded-lg shadow">
-          <p className="text-gray-500">Không có sinh viên nào trong danh sách</p>
-        </div>
-      )}
 
       {/* Edit Modal */}
       {isEditModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <div ref={modalRef} className="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto overflow-hidden">
             <div className="p-6">
               <div className="flex justify-between items-center mb-4">
