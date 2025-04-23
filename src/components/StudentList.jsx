@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import StudentItem from './StudentItem'
 
 
 // Key for localStorage
@@ -501,33 +502,13 @@ const StudentList = () => {
            <tbody className="bg-white divide-y divide-gray-200">
              {filteredStudents.length > 0 ? (
                filteredStudents.map((student) => (
-                 <tr key={student.id} className="hover:bg-gray-50">
-                   <td className="px-6 py-4 whitespace-nowrap">
-                     <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                   </td>
-                   <td className="px-6 py-4 whitespace-nowrap">
-                     <div className="text-sm text-gray-500">{student.class}</div>
-                   </td>
-                   <td className="px-6 py-4 whitespace-nowrap">
-                     <div className="text-sm text-gray-500">{student.age}</div>
-                   </td>
-                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                     <div className="flex justify-end space-x-2">
-                       <button
-                         onClick={() => handleEdit(student)}
-                         className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md transition-colors"
-                       >
-                         Sửa
-                       </button>
-                       <button
-                         onClick={() => handleDelete(student.id)}
-                         className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition-colors"
-                       >
-                         Xoá
-                       </button>
-                     </div>
-                   </td>
-                 </tr>
+                 <StudentItem
+                   key={student.id}
+                   student={student}
+                   onEdit={handleEdit}
+                   onDelete={handleDelete}
+                   view="desktop"
+                 />
                ))
              ) : (
                <tr>
@@ -546,33 +527,7 @@ const StudentList = () => {
        <div className="md:hidden space-y-4">
          {filteredStudents.length > 0 ? (
            filteredStudents.map((student) => (
-             <div key={student.id} className="bg-white p-4 rounded-lg shadow">
-               <div className="flex justify-between items-center mb-2">
-                 <h3 className="text-lg font-medium">{student.name}</h3>
-                 <div className="flex space-x-2">
-                   <button
-                     onClick={() => handleEdit(student)}
-                     className="text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-md text-sm transition-colors"
-                   >
-                     Sửa
-                   </button>
-                   <button
-                     onClick={() => handleDelete(student.id)}
-                     className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md text-sm transition-colors"
-                   >
-                     Xoá
-                   </button>
-                 </div>
-               </div>
-               <div className="grid grid-cols-2 gap-2 text-sm text-gray-500">
-                 <div>
-                   <span className="font-medium">Lớp:</span> {student.class}
-                 </div>
-                 <div>
-                   <span className="font-medium">Tuổi:</span> {student.age}
-                 </div>
-               </div>
-             </div>
+             <StudentItem key={student.id} student={student} onEdit={handleEdit} onDelete={handleDelete} view="mobile" />
            ))
          ) : (
            <div className="bg-white p-4 rounded-lg shadow text-center text-gray-500">
@@ -585,7 +540,7 @@ const StudentList = () => {
  
        {/* Edit Modal */}
        {isEditModalOpen && (
-         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
            <div ref={modalRef} className="bg-white rounded-lg shadow-lg w-full max-w-md mx-auto overflow-hidden">
              <div className="p-6">
                <div className="flex justify-between items-center mb-4">
