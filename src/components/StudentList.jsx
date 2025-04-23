@@ -92,7 +92,12 @@ const StudentList = () => {
         }
       }
 
-  return  (
+  // Function to handle student deletion
+  const handleDelete = (id) => {
+    setStudents(students.filter((student) => student.id !== id))
+  }
+
+  return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-6">Danh sách sinh viên</h1>
 
@@ -205,6 +210,7 @@ const StudentList = () => {
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                   <button
+                    onClick={() => handleDelete(student.id)}
                     className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md transition-colors"
                   >
                     Xoá
@@ -223,6 +229,7 @@ const StudentList = () => {
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-medium">{student.name}</h3>
               <button
+                onClick={() => handleDelete(student.id)}
                 className="text-white bg-red-600 hover:bg-red-700 px-3 py-1 rounded-md text-sm transition-colors"
               >
                 Xoá
